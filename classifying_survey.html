@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Survey — Advanced Product Management</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #1e293b;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+            --accent-bg: #eff6ff;
+            --success: #16a34a;
+            --error: #dc2626;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 24px 16px 48px;
+        }
+
+        .header {
+            background: var(--primary);
+            color: white;
+            padding: 32px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+        }
+
+        .header h1 {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .section {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 28px;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--accent-bg);
+        }
+
+        .question {
+            margin-bottom: 24px;
+        }
+
+        .question:last-child {
+            margin-bottom: 0;
+        }
+
+        .question label.q-label {
+            display: block;
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .question .q-hint {
+            display: block;
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+        }
+
+        .required::after {
+            content: ' *';
+            color: var(--error);
+        }
+
+        input[type="text"],
+        input[type="email"],
+        textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 15px;
+            font-family: inherit;
+            transition: border-color 0.2s;
+            background: var(--bg);
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .radio-group,
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .radio-option,
+        .checkbox-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.15s;
+            background: var(--bg);
+        }
+
+        .radio-option:hover,
+        .checkbox-option:hover {
+            border-color: var(--primary);
+            background: var(--accent-bg);
+        }
+
+        .radio-option input,
+        .checkbox-option input {
+            margin-top: 3px;
+            accent-color: var(--primary);
+            flex-shrink: 0;
+        }
+
+        .radio-option span,
+        .checkbox-option span {
+            font-size: 14px;
+        }
+
+        .submit-section {
+            text-align: center;
+            padding: 28px;
+        }
+
+        .submit-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px 48px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-family: inherit;
+        }
+
+        .submit-btn:hover {
+            background: var(--primary-hover);
+        }
+
+        .submit-btn:disabled {
+            background: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 48px 28px;
+        }
+
+        .success-message .icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .success-message h2 {
+            font-size: 22px;
+            margin-bottom: 8px;
+            color: var(--success);
+        }
+
+        .success-message p {
+            color: var(--text-secondary);
+            font-size: 15px;
+        }
+
+        .error-banner {
+            display: none;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: var(--error);
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 600px) {
+            .container { padding: 12px 8px 32px; }
+            .header { padding: 24px 20px; }
+            .section { padding: 20px 16px; }
+            .header h1 { font-size: 19px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Advanced Product Management for Technical Solutions</h1>
+            <p>Introductory survey — helps the instructor tailor the course to your background and goals. Takes 3–5 minutes.</p>
+        </div>
+
+        <div class="error-banner" id="errorBanner"></div>
+
+        <form id="surveyForm">
+
+            <!-- SECTION: About You -->
+            <div class="section">
+                <div class="section-title">About You</div>
+
+                <div class="question">
+                    <label class="q-label required" for="name">1. What is your name?</label>
+                    <span class="q-hint">First and last name</span>
+                    <input type="text" id="name" name="name" required placeholder="e.g. Maria Ivanova">
+                </div>
+
+                <div class="question">
+                    <label class="q-label required" for="country">2. Where are you from?</label>
+                    <span class="q-hint">Country and city</span>
+                    <input type="text" id="country" name="country" required placeholder="e.g. Nigeria, Lagos">
+                </div>
+
+                <div class="question">
+                    <label class="q-label required" for="role">3. What is your current role or occupation?</label>
+                    <span class="q-hint">Full-time student, working professional, etc. If working — in which field?</span>
+                    <input type="text" id="role" name="role" required placeholder="e.g. Full-time student / Software engineer at...">
+                </div>
+
+                <div class="question">
+                    <label class="q-label required" for="education">4. What is your educational background?</label>
+                    <span class="q-hint">Your degree / field of study</span>
+                    <input type="text" id="education" name="education" required placeholder="e.g. BSc Computer Science, MSc in progress">
+                </div>
+            </div>
+
+            <!-- SECTION: Product & Project Experience -->
+            <div class="section">
+                <div class="section-title">Product & Project Experience</div>
+
+                <div class="question">
+                    <label class="q-label required">5. Have you ever worked on a product or project in any capacity?</label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="product_exp" value="PM/PO" required>
+                            <span>Yes, as a product manager / product owner</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="product_exp" value="Dev/Eng/Design">
+                            <span>Yes, as a developer / engineer / designer on a product team</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="product_exp" value="Non-product role">
+                            <span>Yes, in a non-product role (sales, marketing, support, etc.)</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="product_exp" value="University/hackathon only">
+                            <span>Only in university projects or hackathons</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="product_exp" value="No experience">
+                            <span>No hands-on experience yet</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <label class="q-label required">6. If you have product experience — was it B2B, B2C, or both?</label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="b2b_b2c" value="B2B" required>
+                            <span>B2B (selling to businesses)</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="b2b_b2c" value="B2C">
+                            <span>B2C (selling to individual consumers)</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="b2b_b2c" value="Both">
+                            <span>Both</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="b2b_b2c" value="N/A">
+                            <span>Not sure / not applicable</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <label class="q-label required">7. Have you ever participated in client-facing activities?</label>
+                    <span class="q-hint">e.g. demos, sales calls, client interviews, support interactions</span>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="client_facing" value="Yes, regularly" required>
+                            <span>Yes, regularly</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="client_facing" value="A few times">
+                            <span>A few times</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="client_facing" value="Never">
+                            <span>Never</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION: Technical Depth -->
+            <div class="section">
+                <div class="section-title">Technical Depth</div>
+
+                <div class="question">
+                    <label class="q-label required">8. How would you rate your technical background?</label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="tech_level" value="Strong" required>
+                            <span>Strong — I can write code, build models, or work with data</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="tech_level" value="Moderate">
+                            <span>Moderate — I understand technical concepts but don't code professionally</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="tech_level" value="Basic">
+                            <span>Basic — I'm primarily non-technical</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <label class="q-label">9. Which of the following are you familiar with?</label>
+                    <span class="q-hint">Select all that apply</span>
+                    <div class="checkbox-group">
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="frameworks" value="Prioritization (ICE/RICE/MoSCoW/WSJF)">
+                            <span>Prioritization frameworks (ICE, RICE, MoSCoW, WSJF)</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="frameworks" value="Agile/Scrum/Kanban">
+                            <span>Agile / Scrum / Kanban</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="frameworks" value="JTBD">
+                            <span>Jobs-to-be-Done (JTBD)</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="frameworks" value="Unit economics / SaaS metrics">
+                            <span>Unit economics / SaaS metrics</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="frameworks" value="SQL/Python/data tools">
+                            <span>SQL / Python / data analysis tools</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="frameworks" value="UX research">
+                            <span>UX research methods</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="frameworks" value="None">
+                            <span>None of the above</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION: Expectations -->
+            <div class="section">
+                <div class="section-title">Expectations</div>
+
+                <div class="question">
+                    <label class="q-label required">10. What do you most want to take away from this course?</label>
+                    <span class="q-hint">Pick up to 2</span>
+                    <div class="checkbox-group">
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="goals" value="B2B PM understanding">
+                            <span>Understanding how B2B product management works</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="goals" value="Frameworks">
+                            <span>Practical frameworks for prioritization and decision-making</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="goals" value="Real-world cases">
+                            <span>Experience with real-world cases and demos</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="goals" value="Metrics & analytics">
+                            <span>Knowledge of technical product metrics and analytics</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="goals" value="Career guidance">
+                            <span>Career guidance — how to break into PM</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="goals" value="AI/ML in PM">
+                            <span>Exposure to AI/ML product management topics</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <label class="q-label" for="industry_interest">11. Is there a specific industry or product type you're most interested in?</label>
+                    <span class="q-hint">e.g. manufacturing, fintech, healthcare, logistics, AI/ML — optional</span>
+                    <textarea id="industry_interest" name="industry_interest" rows="2" placeholder="e.g. I'm interested in AI products for healthcare..."></textarea>
+                </div>
+            </div>
+
+            <!-- SUBMIT -->
+            <div class="section submit-section" id="submitSection">
+                <button type="submit" class="submit-btn" id="submitBtn">Submit</button>
+            </div>
+
+        </form>
+
+        <!-- SUCCESS -->
+        <div class="section success-message" id="successMessage">
+            <div class="icon">&#10003;</div>
+            <h2>Thank you!</h2>
+            <p>Your response has been recorded. See you in class!</p>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        // CONFIGURATION — paste your Google Apps Script URL here
+        // ============================================================
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwryhE7SEDEQok8_VHJB5tGIcYJYvKCBG5zMNnxJzoTJx_98FGX8V39-MInPFUB2IKtJg/exec';
+        // ============================================================
+
+        const form = document.getElementById('surveyForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const submitSection = document.getElementById('submitSection');
+        const successMessage = document.getElementById('successMessage');
+        const errorBanner = document.getElementById('errorBanner');
+
+        // Limit "goals" checkboxes to max 2
+        const goalCheckboxes = document.querySelectorAll('input[name="goals"]');
+        goalCheckboxes.forEach(cb => {
+            cb.addEventListener('change', () => {
+                const checked = document.querySelectorAll('input[name="goals"]:checked');
+                if (checked.length > 2) {
+                    cb.checked = false;
+                }
+            });
+        });
+
+        // "None" in frameworks should uncheck others and vice versa
+        const fwCheckboxes = document.querySelectorAll('input[name="frameworks"]');
+        fwCheckboxes.forEach(cb => {
+            cb.addEventListener('change', () => {
+                if (cb.value === 'None' && cb.checked) {
+                    fwCheckboxes.forEach(other => {
+                        if (other !== cb) other.checked = false;
+                    });
+                } else if (cb.value !== 'None' && cb.checked) {
+                    const noneCb = document.querySelector('input[name="frameworks"][value="None"]');
+                    if (noneCb) noneCb.checked = false;
+                }
+            });
+        });
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            errorBanner.style.display = 'none';
+
+            // Validate at least 1 goal selected
+            const goalsChecked = document.querySelectorAll('input[name="goals"]:checked');
+            if (goalsChecked.length === 0) {
+                errorBanner.textContent = 'Please select at least one course goal (question 10).';
+                errorBanner.style.display = 'block';
+                errorBanner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+
+            // Collect data
+            const data = {
+                timestamp: new Date().toISOString(),
+                name: form.name.value.trim(),
+                country: form.country.value.trim(),
+                role: form.role.value.trim(),
+                education: form.education.value.trim(),
+                product_exp: form.product_exp.value,
+                b2b_b2c: form.b2b_b2c.value,
+                client_facing: form.client_facing.value,
+                tech_level: form.tech_level.value,
+                frameworks: Array.from(document.querySelectorAll('input[name="frameworks"]:checked')).map(c => c.value).join(', ') || 'None',
+                goals: Array.from(goalsChecked).map(c => c.value).join(', '),
+                industry_interest: form.industry_interest.value.trim() || '—'
+            };
+
+            // Show loading
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner"></span> Submitting...';
+
+            try {
+                if (GOOGLE_SCRIPT_URL.includes('__PASTE')) {
+                    throw new Error('Google Apps Script URL not configured. See setup instructions.');
+                }
+
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                // no-cors means we can't read the response, so assume success
+                form.style.display = 'none';
+                submitSection.style.display = 'none';
+                successMessage.style.display = 'block';
+                successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } catch (err) {
+                errorBanner.textContent = 'Error: ' + err.message;
+                errorBanner.style.display = 'block';
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Submit';
+                errorBanner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        });
+    </script>
+</body>
+</html>
