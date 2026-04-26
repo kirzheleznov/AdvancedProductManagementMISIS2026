@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Closing Survey — Advanced Product Management</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #1e293b;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+            --accent-bg: #eff6ff;
+            --success: #16a34a;
+            --error: #dc2626;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 24px 16px 48px;
+        }
+
+        .header {
+            background: var(--primary);
+            color: white;
+            padding: 32px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+        }
+
+        .header h1 {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .section {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 28px;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--accent-bg);
+        }
+
+        .question {
+            margin-bottom: 24px;
+        }
+
+        .question:last-child {
+            margin-bottom: 0;
+        }
+
+        .question label.q-label {
+            display: block;
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .question .q-hint {
+            display: block;
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+        }
+
+        .required::after {
+            content: ' *';
+            color: var(--error);
+        }
+
+        input[type="text"],
+        input[type="email"],
+        textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 15px;
+            font-family: inherit;
+            transition: border-color 0.2s;
+            background: var(--bg);
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .radio-group,
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .radio-option,
+        .checkbox-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.15s;
+            background: var(--bg);
+        }
+
+        .radio-option:hover,
+        .checkbox-option:hover {
+            border-color: var(--primary);
+            background: var(--accent-bg);
+        }
+
+        .radio-option input,
+        .checkbox-option input {
+            margin-top: 3px;
+            accent-color: var(--primary);
+            flex-shrink: 0;
+        }
+
+        .radio-option span,
+        .checkbox-option span {
+            font-size: 14px;
+        }
+
+        /* Numeric scale (1–10, 0–10, 1–5) — horizontal pill row */
+        .scale-group {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .scale-option {
+            flex: 1 1 40px;
+            min-width: 40px;
+            text-align: center;
+            padding: 10px 6px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.15s;
+            background: var(--bg);
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text);
+        }
+
+        .scale-option input {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .scale-option:hover {
+            border-color: var(--primary);
+            background: var(--accent-bg);
+        }
+
+        .scale-option:has(input:checked) {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .scale-hint {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 6px;
+        }
+
+        /* Skill matrix — a row of scale pills per skill */
+        .matrix-row {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 12px;
+            align-items: center;
+            padding: 12px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg);
+            margin-bottom: 8px;
+        }
+
+        .matrix-row .skill-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .matrix-row .scale-group {
+            gap: 4px;
+        }
+
+        .matrix-row .scale-option {
+            flex: 0 0 34px;
+            min-width: 34px;
+            padding: 6px 4px;
+            font-size: 13px;
+        }
+
+        @media (max-width: 600px) {
+            .matrix-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .submit-section {
+            text-align: center;
+            padding: 28px;
+        }
+
+        .submit-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px 48px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-family: inherit;
+        }
+
+        .submit-btn:hover {
+            background: var(--primary-hover);
+        }
+
+        .submit-btn:disabled {
+            background: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 48px 28px;
+        }
+
+        .success-message .icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .success-message h2 {
+            font-size: 22px;
+            margin-bottom: 8px;
+            color: var(--success);
+        }
+
+        .success-message p {
+            color: var(--text-secondary);
+            font-size: 15px;
+        }
+
+        .error-banner {
+            display: none;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: var(--error);
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 600px) {
+            .container { padding: 12px 8px 32px; }
+            .header { padding: 24px 20px; }
+            .section { padding: 20px 16px; }
+            .header h1 { font-size: 19px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Advanced Product Management — Closing Survey</h1>
+            <p>Your honest feedback shapes the next revision of this course. Takes 3–5 minutes.</p>
+        </div>
+
+        <div class="error-banner" id="errorBanner"></div>
+
+        <form id="surveyForm">
+
+            <!-- SECTION: About You -->
+            <div class="section">
+                <div class="section-title">About You</div>
+
+                <div class="question">
+                    <label class="q-label required" for="name">1. What is your name?</label>
+                    <span class="q-hint">Same name you used on the Day 1 intake form — lets the instructor compare before/after per student.</span>
+                    <input type="text" id="name" name="name" required placeholder="e.g. Maria Ivanova">
+                </div>
+            </div>
+
+            <!-- SECTION: How the Course Landed -->
+            <div class="section">
+                <div class="section-title">How the Course Landed</div>
+
+                <div class="question">
+                    <label class="q-label required">2. Overall, how would you rate the course?</label>
+                    <span class="q-hint">1 = poor, 10 = outstanding</span>
+                    <div class="scale-group" id="overall_rating_group">
+                        <!-- 1..10 populated by JS -->
+                    </div>
+                    <div class="scale-hint"><span>1 — poor</span><span>10 — outstanding</span></div>
+                </div>
+
+                <div class="question">
+                    <label class="q-label required">3. Which session was the most useful for you?</label>
+                    <div class="radio-group">
+                        <label class="radio-option"><input type="radio" name="most_useful_day" value="Day 1 — What makes technical PM different" required><span>Day 1 — What makes technical PM different</span></label>
+                        <label class="radio-option"><input type="radio" name="most_useful_day" value="Day 2 — Customer discovery and client preparation"><span>Day 2 — Customer discovery and client preparation</span></label>
+                        <label class="radio-option"><input type="radio" name="most_useful_day" value="Day 3 — Prioritization and product strategy"><span>Day 3 — Prioritization and product strategy</span></label>
+                        <label class="radio-option"><input type="radio" name="most_useful_day" value="Day 4 — Metrics, feedback, and data-driven decisions"><span>Day 4 — Metrics, feedback, and data-driven decisions</span></label>
+                        <label class="radio-option"><input type="radio" name="most_useful_day" value="Day 5 — Demos, pilots, and B2B sales"><span>Day 5 — Demos, pilots, and B2B sales</span></label>
+                        <label class="radio-option"><input type="radio" name="most_useful_day" value="Day 6 — Scaling, AI-native products, future of PM"><span>Day 6 — Scaling, AI-native products, future of PM</span></label>
+                        <label class="radio-option"><input type="radio" name="most_useful_day" value="None stood out"><span>None stood out — they were roughly equal</span></label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <label class="q-label required">4. Which session was the least useful for you?</label>
+                    <span class="q-hint">Force yourself to pick one — this is the most valuable answer for improving the course.</span>
+                    <div class="radio-group">
+                        <label class="radio-option"><input type="radio" name="least_useful_day" value="Day 1 — What makes technical PM different" required><span>Day 1 — What makes technical PM different</span></label>
+                        <label class="radio-option"><input type="radio" name="least_useful_day" value="Day 2 — Customer discovery and client preparation"><span>Day 2 — Customer discovery and client preparation</span></label>
+                        <label class="radio-option"><input type="radio" name="least_useful_day" value="Day 3 — Prioritization and product strategy"><span>Day 3 — Prioritization and product strategy</span></label>
+                        <label class="radio-option"><input type="radio" name="least_useful_day" value="Day 4 — Metrics, feedback, and data-driven decisions"><span>Day 4 — Metrics, feedback, and data-driven decisions</span></label>
+                        <label class="radio-option"><input type="radio" name="least_useful_day" value="Day 5 — Demos, pilots, and B2B sales"><span>Day 5 — Demos, pilots, and B2B sales</span></label>
+                        <label class="radio-option"><input type="radio" name="least_useful_day" value="Day 6 — Scaling, AI-native products, future of PM"><span>Day 6 — Scaling, AI-native products, future of PM</span></label>
+                        <label class="radio-option"><input type="radio" name="least_useful_day" value="None — all were useful"><span>None — they were all useful in their own way</span></label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION: Skills and Confidence -->
+            <div class="section">
+                <div class="section-title">Skills and Confidence</div>
+
+                <div class="question">
+                    <label class="q-label required">5. How confident are you in these PM skills NOW, after the course?</label>
+                    <span class="q-hint">1 = no idea, 5 = I can do this in a real job. One score per skill.</span>
+
+                    <div class="matrix-row">
+                        <div class="skill-name">Understanding B2B vs B2C product differences</div>
+                        <div class="scale-group" data-name="skill_b2b"></div>
+                    </div>
+                    <div class="matrix-row">
+                        <div class="skill-name">Running a customer discovery conversation</div>
+                        <div class="scale-group" data-name="skill_discovery"></div>
+                    </div>
+                    <div class="matrix-row">
+                        <div class="skill-name">Prioritizing a backlog using RICE or similar</div>
+                        <div class="scale-group" data-name="skill_prioritization"></div>
+                    </div>
+                    <div class="matrix-row">
+                        <div class="skill-name">Reading and decoding customer feedback</div>
+                        <div class="scale-group" data-name="skill_feedback"></div>
+                    </div>
+                    <div class="matrix-row">
+                        <div class="skill-name">Running a technical product demo or pilot</div>
+                        <div class="scale-group" data-name="skill_demos"></div>
+                    </div>
+                    <div class="matrix-row">
+                        <div class="skill-name">Using AI tools as a daily PM assistant</div>
+                        <div class="scale-group" data-name="skill_ai"></div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <label class="q-label required">6. Compared to Day 1, how much did your confidence in PM skills grow?</label>
+                    <div class="radio-group">
+                        <label class="radio-option"><input type="radio" name="confidence_growth" value="Significantly" required><span>Significantly — I feel much more prepared</span></label>
+                        <label class="radio-option"><input type="radio" name="confidence_growth" value="Moderately"><span>Moderately — I learned useful things</span></label>
+                        <label class="radio-option"><input type="radio" name="confidence_growth" value="A little"><span>A little — a few useful bits</span></label>
+                        <label class="radio-option"><input type="radio" name="confidence_growth" value="Not really"><span>Not really — I knew most of this already</span></label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION: Expectations and Gaps -->
+            <div class="section">
+                <div class="section-title">Expectations and Gaps</div>
+
+                <div class="question">
+                    <label class="q-label required">7. Did the course meet the expectations you stated on Day 1?</label>
+                    <div class="radio-group">
+                        <label class="radio-option"><input type="radio" name="expectations_met" value="Fully" required><span>Yes, fully</span></label>
+                        <label class="radio-option"><input type="radio" name="expectations_met" value="Mostly"><span>Mostly — a few gaps</span></label>
+                        <label class="radio-option"><input type="radio" name="expectations_met" value="Partly"><span>Partly — significant gaps</span></label>
+                        <label class="radio-option"><input type="radio" name="expectations_met" value="No"><span>No — different course than I expected</span></label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <label class="q-label" for="gaps">8. If you answered "gaps" — what was missing?</label>
+                    <span class="q-hint">Short answer is fine. Leave blank if question 7 = "Fully".</span>
+                    <textarea id="gaps" name="gaps" rows="3" placeholder="e.g. I wanted more on pricing models, or more technical depth on observability..."></textarea>
+                </div>
+
+                <div class="question">
+                    <label class="q-label required" for="takeaway">9. What was the single most valuable thing you took away from this course?</label>
+                    <span class="q-hint">One sentence is enough. This is the highest-signal answer in the whole form.</span>
+                    <textarea id="takeaway" name="takeaway" rows="3" required placeholder="e.g. Learning to decode customer requests before implementing them..."></textarea>
+                </div>
+
+                <div class="question">
+                    <label class="q-label" for="changes">10. What would you change about this course if you were the instructor?</label>
+                    <span class="q-hint">Be specific — "more X" or "less Y" is more useful than "it was great".</span>
+                    <textarea id="changes" name="changes" rows="3" placeholder="e.g. More time on Day 3 prioritization, less time on Day 6 overview..."></textarea>
+                </div>
+            </div>
+
+            <!-- SECTION: Next Step -->
+            <div class="section">
+                <div class="section-title">Next Step</div>
+
+                <div class="question">
+                    <label class="q-label required">11. How likely are you to recommend this course to a colleague or fellow student?</label>
+                    <span class="q-hint">Standard NPS scale. 0 = definitely not, 10 = definitely yes.</span>
+                    <div class="scale-group" id="nps_group">
+                        <!-- 0..10 populated by JS -->
+                    </div>
+                    <div class="scale-hint"><span>0 — not at all</span><span>10 — absolutely</span></div>
+                </div>
+
+                <div class="question">
+                    <label class="q-label required">12. What is your next step after this course?</label>
+                    <div class="radio-group">
+                        <label class="radio-option"><input type="radio" name="next_step" value="Actively pursue PM" required><span>I plan to actively pursue a PM role</span></label>
+                        <label class="radio-option"><input type="radio" name="next_step" value="Already PM, will apply"><span>I am already in a PM role and will apply what I learned</span></label>
+                        <label class="radio-option"><input type="radio" name="next_step" value="Considering PM"><span>I am considering PM as a possible future direction</span></label>
+                        <label class="radio-option"><input type="radio" name="next_step" value="Useful for current role"><span>I don't plan to become a PM but the content is useful for my current role</span></label>
+                        <label class="radio-option"><input type="radio" name="next_step" value="Other"><span>Other (please add in comments below)</span></label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <label class="q-label" for="comments">13. Anything else you want the instructor to know?</label>
+                    <span class="q-hint">Optional.</span>
+                    <textarea id="comments" name="comments" rows="3" placeholder="Optional free-form comments..."></textarea>
+                </div>
+            </div>
+
+            <!-- SUBMIT -->
+            <div class="section submit-section" id="submitSection">
+                <button type="submit" class="submit-btn" id="submitBtn">Submit</button>
+            </div>
+
+        </form>
+
+        <!-- SUCCESS -->
+        <div class="section success-message" id="successMessage">
+            <div class="icon">&#10003;</div>
+            <h2>Thank you!</h2>
+            <p>Your feedback has been recorded. This course will be better because of it.</p>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        // CONFIGURATION — paste your Google Apps Script URL here
+        // ============================================================
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwzHw0pOQ6gM8G1k4EGMcRnGOv-fRAwEhWKRm6H-I7vy7JVZroaucsI1LxMVxbtBX8UGQ/exec';
+        // ============================================================
+
+        const form = document.getElementById('surveyForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const submitSection = document.getElementById('submitSection');
+        const successMessage = document.getElementById('successMessage');
+        const errorBanner = document.getElementById('errorBanner');
+
+        // Populate numeric scale pills (1..10 and 0..10 and skill-matrix 1..5)
+        function populateScale(container, name, min, max) {
+            container.innerHTML = '';
+            for (let i = min; i <= max; i++) {
+                const label = document.createElement('label');
+                label.className = 'scale-option';
+                label.innerHTML = `<input type="radio" name="${name}" value="${i}" required>${i}`;
+                container.appendChild(label);
+            }
+        }
+
+        populateScale(document.getElementById('overall_rating_group'), 'overall_rating', 1, 10);
+        populateScale(document.getElementById('nps_group'), 'nps', 0, 10);
+
+        document.querySelectorAll('.matrix-row .scale-group').forEach(g => {
+            populateScale(g, g.dataset.name, 1, 5);
+        });
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            errorBanner.style.display = 'none';
+
+            // Validate every required radio group has a value (browser does most of it,
+            // but the scale groups are programmatically built — double-check)
+            const requiredRadioGroups = [
+                'overall_rating', 'most_useful_day', 'least_useful_day',
+                'skill_b2b', 'skill_discovery', 'skill_prioritization',
+                'skill_feedback', 'skill_demos', 'skill_ai',
+                'confidence_growth', 'expectations_met', 'nps', 'next_step'
+            ];
+            for (const groupName of requiredRadioGroups) {
+                if (!document.querySelector(`input[name="${groupName}"]:checked`)) {
+                    errorBanner.textContent = 'Please complete all required questions before submitting.';
+                    errorBanner.style.display = 'block';
+                    errorBanner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    return;
+                }
+            }
+
+            const get = (n) => {
+                const el = document.querySelector(`input[name="${n}"]:checked`);
+                return el ? el.value : '';
+            };
+
+            const data = {
+                timestamp: new Date().toISOString(),
+                name: form.name.value.trim(),
+                overall_rating: get('overall_rating'),
+                most_useful_day: get('most_useful_day'),
+                least_useful_day: get('least_useful_day'),
+                skill_b2b: get('skill_b2b'),
+                skill_discovery: get('skill_discovery'),
+                skill_prioritization: get('skill_prioritization'),
+                skill_feedback: get('skill_feedback'),
+                skill_demos: get('skill_demos'),
+                skill_ai: get('skill_ai'),
+                confidence_growth: get('confidence_growth'),
+                expectations_met: get('expectations_met'),
+                gaps: form.gaps.value.trim(),
+                takeaway: form.takeaway.value.trim(),
+                changes: form.changes.value.trim(),
+                nps: get('nps'),
+                next_step: get('next_step'),
+                comments: form.comments.value.trim()
+            };
+
+            // Show loading
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner"></span> Submitting...';
+
+            try {
+                if (GOOGLE_SCRIPT_URL.includes('__PASTE')) {
+                    throw new Error('Google Apps Script URL not configured. See SETUP.md instructions.');
+                }
+
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                // no-cors means we can't read the response, so assume success
+                form.style.display = 'none';
+                submitSection.style.display = 'none';
+                successMessage.style.display = 'block';
+                successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } catch (err) {
+                errorBanner.textContent = 'Error: ' + err.message;
+                errorBanner.style.display = 'block';
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Submit';
+                errorBanner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        });
+    </script>
+</body>
+</html>
