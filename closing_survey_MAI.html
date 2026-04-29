@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Итоговый опрос — Проектирование высокотехнологичных организаций</title>
+    <style>
+        :root {
+            --primary: #1F4E79;
+            --primary-hover: #163a5a;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #1e293b;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+            --accent-bg: #eff6ff;
+            --success: #16a34a;
+            --error: #dc2626;
+            --orange: #ED7D31;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 24px 16px 48px;
+        }
+
+        .header {
+            background: var(--primary);
+            color: white;
+            padding: 32px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            border-bottom: 4px solid var(--orange);
+        }
+
+        .header h1 {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .section {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 28px;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--accent-bg);
+        }
+
+        .question {
+            margin-bottom: 24px;
+        }
+
+        .question:last-child {
+            margin-bottom: 0;
+        }
+
+        .question label.q-label {
+            display: block;
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .question .q-hint {
+            display: block;
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+        }
+
+        .required::after {
+            content: ' *';
+            color: var(--error);
+        }
+
+        input[type="text"],
+        input[type="email"],
+        textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 15px;
+            font-family: inherit;
+            transition: border-color 0.2s;
+            background: var(--bg);
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(31, 78, 121, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .radio-group,
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .radio-option,
+        .checkbox-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.15s;
+            background: var(--bg);
+        }
+
+        .radio-option:hover,
+        .checkbox-option:hover {
+            border-color: var(--primary);
+            background: var(--accent-bg);
+        }
+
+        .radio-option input,
+        .checkbox-option input {
+            margin-top: 3px;
+            accent-color: var(--primary);
+            flex-shrink: 0;
+        }
+
+        .radio-option span,
+        .checkbox-option span {
+            font-size: 14px;
+        }
+
+        /* Numeric scale (1–10, 0–10, 1–5) — horizontal pill row */
+        .scale-group {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .scale-option {
+            flex: 1 1 40px;
+            min-width: 40px;
+            text-align: center;
+            padding: 10px 6px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.15s;
+            background: var(--bg);
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text);
+        }
+
+        .scale-option input {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .scale-option:hover {
+            border-color: var(--primary);
+            background: var(--accent-bg);
+        }
+
+        .scale-option:has(input:checked) {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .scale-hint {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 6px;
+        }
+
+        /* Skill matrix — a row of scale pills per skill */
+        .matrix-row {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 12px;
+            align-items: center;
+            padding: 12px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg);
+            margin-bottom: 8px;
+        }
+
+        .matrix-row .skill-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .matrix-row .scale-group {
+            gap: 4px;
+        }
+
+        .matrix-row .scale-option {
+            flex: 0 0 34px;
+            min-width: 34px;
+            padding: 6px 4px;
+            font-size: 13px;
+        }
+
+        @media (max-width: 600px) {
+            .matrix-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .submit-section {
+            text-align: center;
+            padding: 28px;
+        }
+
+        .submit-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px 48px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-family: inherit;
+        }
+
+        .submit-btn:hover {
+            background: var(--primary-hover);
+        }
+
+        .submit-btn:disabled {
+            background: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 48px 28px;
+        }
+
+        .success-message .icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .success-message h2 {
+            font-size: 22px;
+            margin-bottom: 8px;
+            color: var(--success);
+        }
+
+        .success-message p {
+            color: var(--text-secondary);
+            font-size: 15px;
+        }
+
+        .error-banner {
+            display: none;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: var(--error);
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 600px) {
+            .container { padding: 12px 8px 32px; }
+            .header { padding: 24px 20px; }
+            .section { padding: 20px 16px; }
+            .header h1 { font-size: 19px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Проектирование высокотехнологичных организаций — итоговый опрос</h1>
+            <p>Опрос анонимный. Ваши ответы напрямую формируют программу 2027 года. 5–7 минут.</p>
+        </div>
+
+        <div class="error-banner" id="errorBanner"></div>
+
+        <form id="surveyForm">
+
+            <!-- SECTION: Об общем впечатлении -->
+            <div class="section">
+                <div class="section-title">Об общем впечатлении</div>
+
+                <div class="question">
+                    <label class="q-label required">1. Общая оценка курса</label>
+                    <span class="q-hint">1 = плохой, 10 = превосходный</span>
+                    <div class="scale-group" id="overall_rating_group">
+                        <!-- 1..10 populated by JS -->
+                    </div>
+                    <div class="scale-hint"><span>1 — плохой</span><span>10 — превосходный</span></div>
+                </div>
+
+                <div class="question">
+                    <label class="q-label required">2. Какая лекция была самой ПОЛЕЗНОЙ для вас?</label>
+                    <div class="radio-group">
+                        <label class="radio-option"><input type="radio" name="most_useful_lecture" value="Л1 — Особенности высокотехнологичного бизнеса" required><span>Л1 — Особенности высокотехнологичного бизнеса</span></label>
+                        <label class="radio-option"><input type="radio" name="most_useful_lecture" value="Л2 — Временная стоимость денег (PV / FV)"><span>Л2 — Временная стоимость денег (PV / FV)</span></label>
+                        <label class="radio-option"><input type="radio" name="most_useful_lecture" value="Л3 — NPV / PI / юнит-экономика / кассовый разрыв"><span>Л3 — NPV / PI / юнит-экономика / кассовый разрыв</span></label>
+                        <label class="radio-option"><input type="radio" name="most_useful_lecture" value="Л4 — Team Topologies, когнитивная нагрузка"><span>Л4 — Team Topologies, когнитивная нагрузка</span></label>
+                        <label class="radio-option"><input type="radio" name="most_useful_lecture" value="Л5 — ФОТ, грейды, MoSCoW / RICE"><span>Л5 — ФОТ, грейды, MoSCoW / RICE</span></label>
+                        <label class="radio-option"><input type="radio" name="most_useful_lecture" value="Л6 — Lead Time, DORA, VSM"><span>Л6 — Lead Time, DORA, VSM</span></label>
+                        <label class="radio-option"><input type="radio" name="most_useful_lecture" value="Л7 — Кейсы трансформации, парадокс Симпсона"><span>Л7 — Кейсы трансформации, парадокс Симпсона</span></label>
+                        <label class="radio-option"><input type="radio" name="most_useful_lecture" value="Л8 — Кейс-интервью, Pyramid Principle"><span>Л8 — Кейс-интервью, Pyramid Principle</span></label>
+                        <label class="radio-option"><input type="radio" name="most_useful_lecture" value="Все примерно одинаково полезны"><span>Все примерно одинаково полезны</span></label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <label class="q-label required">3. Какая лекция была самой СЛОЖНОЙ для понимания?</label>
+                    <span class="q-hint">Заставьте себя выбрать одну — данные про сложность важнее похвал.</span>
+                    <div class="radio-group">
+                        <label class="radio-option"><input type="radio" name="hardest_lecture" value="Л1 — Особенности высокотехнологичного бизнеса" required><span>Л1 — Особенности высокотехнологичного бизнеса</span></label>
+                        <label class="radio-option"><input type="radio" name="hardest_lecture" value="Л2 — Временная стоимость денег (PV / FV)"><span>Л2 — Временная стоимость денег (PV / FV)</span></label>
+                        <label class="radio-option"><input type="radio" name="hardest_lecture" value="Л3 — NPV / PI / юнит-экономика / кассовый разрыв"><span>Л3 — NPV / PI / юнит-экономика / кассовый разрыв</span></label>
+                        <label class="radio-option"><input type="radio" name="hardest_lecture" value="Л4 — Team Topologies, когнитивная нагрузка"><span>Л4 — Team Topologies, когнитивная нагрузка</span></label>
+                        <label class="radio-option"><input type="radio" name="hardest_lecture" value="Л5 — ФОТ, грейды, MoSCoW / RICE"><span>Л5 — ФОТ, грейды, MoSCoW / RICE</span></label>
+                        <label class="radio-option"><input type="radio" name="hardest_lecture" value="Л6 — Lead Time, DORA, VSM"><span>Л6 — Lead Time, DORA, VSM</span></label>
+                        <label class="radio-option"><input type="radio" name="hardest_lecture" value="Л7 — Кейсы трансформации, парадокс Симпсона"><span>Л7 — Кейсы трансформации, парадокс Симпсона</span></label>
+                        <label class="radio-option"><input type="radio" name="hardest_lecture" value="Л8 — Кейс-интервью, Pyramid Principle"><span>Л8 — Кейс-интервью, Pyramid Principle</span></label>
+                        <label class="radio-option"><input type="radio" name="hardest_lecture" value="Все были понятны"><span>Все были понятны</span></label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION: Уверенность в навыках -->
+            <div class="section">
+                <div class="section-title">Уверенность по 4 языкам курса</div>
+
+                <div class="question">
+                    <label class="q-label required">4. Уверенность в навыках СЕЙЧАС, после прохождения</label>
+                    <span class="q-hint">1 = не понимаю, 5 = могу применить на работе. По одной оценке на каждый язык.</span>
+
+                    <div class="matrix-row">
+                        <div class="skill-name">Язык денег — NPV, PI, юнит-экономика, кассовый разрыв</div>
+                        <div class="scale-group" data-name="skill_money"></div>
+                    </div>
+                    <div class="matrix-row">
+                        <div class="skill-name">Язык людей — Team Topologies, ФОТ, MoSCoW</div>
+                        <div class="scale-group" data-name="skill_people"></div>
+                    </div>
+                    <div class="matrix-row">
+                        <div class="skill-name">Язык потока — Lead Time, DORA, VSM</div>
+                        <div class="scale-group" data-name="skill_flow"></div>
+                    </div>
+                    <div class="matrix-row">
+                        <div class="skill-name">Язык коммуникации — Pyramid, MECE, market sizing</div>
+                        <div class="scale-group" data-name="skill_comm"></div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <label class="q-label required">5. По сравнению с началом курса, насколько выросла ваша уверенность?</label>
+                    <div class="radio-group">
+                        <label class="radio-option"><input type="radio" name="confidence_growth" value="Существенно" required><span>Существенно — чувствую себя гораздо увереннее</span></label>
+                        <label class="radio-option"><input type="radio" name="confidence_growth" value="Заметно"><span>Заметно — узнал много полезного</span></label>
+                        <label class="radio-option"><input type="radio" name="confidence_growth" value="Немного"><span>Немного — несколько полезных фрагментов</span></label>
+                        <label class="radio-option"><input type="radio" name="confidence_growth" value="Почти нет"><span>Почти нет — большую часть знал и до курса</span></label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION: Темп и практика -->
+            <div class="section">
+                <div class="section-title">Темп и практика</div>
+
+                <div class="question">
+                    <label class="q-label required">6. Качество практики — хватало ли работы руками?</label>
+                    <span class="q-hint">1 = слишком мало практики, 10 = идеальный баланс</span>
+                    <div class="scale-group" id="practice_group"></div>
+                    <div class="scale-hint"><span>1 — мало</span><span>10 — идеально</span></div>
+                </div>
+
+                <div class="question">
+                    <label class="q-label required">7. Чёткость требований к курсовой</label>
+                    <span class="q-hint">1 = совсем не понимаю что требуется, 10 = полная ясность</span>
+                    <div class="scale-group" id="thesis_clarity_group"></div>
+                    <div class="scale-hint"><span>1 — не понимаю</span><span>10 — ясность</span></div>
+                </div>
+
+                <div class="question">
+                    <label class="q-label required">8. Темп лекций</label>
+                    <span class="q-hint">1 = слишком медленно, 10 = слишком быстро. Оптимум — около 5–6.</span>
+                    <div class="scale-group" id="pace_group"></div>
+                    <div class="scale-hint"><span>1 — медленно</span><span>10 — быстро</span></div>
+                </div>
+            </div>
+
+            <!-- SECTION: Что забираете и что менять -->
+            <div class="section">
+                <div class="section-title">Что забираете и что менять</div>
+
+                <div class="question">
+                    <label class="q-label required" for="takeaway">9. ТОП-1 концепция или фреймворк, который применю в ближайший месяц</label>
+                    <span class="q-hint">Конкретно. Например: «Применю MoSCoW для бэклога моей команды» или «Посчитаю NPV своей идеи стартапа перед тем, как тратить выходные».</span>
+                    <textarea id="takeaway" name="takeaway" rows="3" required placeholder="Например: применю MoSCoW для бэклога..."></textarea>
+                </div>
+
+                <div class="question">
+                    <label class="q-label" for="extra">10. Что было лишним, затянутым или не работающим?</label>
+                    <span class="q-hint">Назовите конкретную лекцию или блок. Можно пропустить, но самые ценные данные — здесь.</span>
+                    <textarea id="extra" name="extra" rows="3" placeholder="Например: блок по Симпсону на Л7 затянут..."></textarea>
+                </div>
+
+                <div class="question">
+                    <label class="q-label" for="missing">11. Чего вам не хватило?</label>
+                    <span class="q-hint">Тема / инструмент / формат работы. Можно пропустить.</span>
+                    <textarea id="missing" name="missing" rows="3" placeholder="Например: хотелось бы увидеть DCF и оценку компаний..."></textarea>
+                </div>
+
+                <div class="question">
+                    <label class="q-label required" for="changes">12. Если бы вы были автором курса — какую ОДНУ правку вы бы внесли?</label>
+                    <span class="q-hint">Конкретно — что убрать / что добавить / что переписать. Это главный вопрос для калибровки потока 2027.</span>
+                    <textarea id="changes" name="changes" rows="3" required placeholder="Например: добавил бы практику собеседований по кейсам..."></textarea>
+                </div>
+            </div>
+
+            <!-- SECTION: Финал -->
+            <div class="section">
+                <div class="section-title">Финал</div>
+
+                <div class="question">
+                    <label class="q-label required">13. Насколько вы готовы порекомендовать курс другу-инженеру?</label>
+                    <span class="q-hint">Стандартный NPS. 0 = точно не порекомендую, 10 = точно порекомендую.</span>
+                    <div class="scale-group" id="nps_group">
+                        <!-- 0..10 populated by JS -->
+                    </div>
+                    <div class="scale-hint"><span>0 — точно нет</span><span>10 — точно да</span></div>
+                </div>
+
+                <div class="question">
+                    <label class="q-label" for="comments">14. Хотите что-то ещё передать преподавателю?</label>
+                    <span class="q-hint">Опционально.</span>
+                    <textarea id="comments" name="comments" rows="3" placeholder="Опциональные свободные комментарии..."></textarea>
+                </div>
+            </div>
+
+            <!-- SUBMIT -->
+            <div class="section submit-section" id="submitSection">
+                <button type="submit" class="submit-btn" id="submitBtn">Отправить</button>
+            </div>
+
+        </form>
+
+        <!-- SUCCESS -->
+        <div class="section success-message" id="successMessage">
+            <div class="icon">&#10003;</div>
+            <h2>Спасибо!</h2>
+            <p>Ваш ответ записан. Курс станет лучше благодаря этому. Удачи на экзамене и защите.</p>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        // CONFIGURATION — paste your Google Apps Script URL here
+        // ============================================================
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyAEfu0e14tm-Fd5wWGy2HfNrorD5l28xCDJlV7XFqqlCqR6ggTWvlTBzUvpoC30SNYPg/exec';
+        // ============================================================
+
+        const form = document.getElementById('surveyForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const submitSection = document.getElementById('submitSection');
+        const successMessage = document.getElementById('successMessage');
+        const errorBanner = document.getElementById('errorBanner');
+
+        // Populate numeric scale pills (1..10 and 0..10 and skill-matrix 1..5)
+        function populateScale(container, name, min, max) {
+            container.innerHTML = '';
+            for (let i = min; i <= max; i++) {
+                const label = document.createElement('label');
+                label.className = 'scale-option';
+                label.innerHTML = `<input type="radio" name="${name}" value="${i}" required>${i}`;
+                container.appendChild(label);
+            }
+        }
+
+        populateScale(document.getElementById('overall_rating_group'), 'overall_rating', 1, 10);
+        populateScale(document.getElementById('practice_group'), 'practice', 1, 10);
+        populateScale(document.getElementById('thesis_clarity_group'), 'thesis_clarity', 1, 10);
+        populateScale(document.getElementById('pace_group'), 'pace', 1, 10);
+        populateScale(document.getElementById('nps_group'), 'nps', 0, 10);
+
+        document.querySelectorAll('.matrix-row .scale-group').forEach(g => {
+            populateScale(g, g.dataset.name, 1, 5);
+        });
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            errorBanner.style.display = 'none';
+
+            const requiredRadioGroups = [
+                'overall_rating', 'most_useful_lecture', 'hardest_lecture',
+                'skill_money', 'skill_people', 'skill_flow', 'skill_comm',
+                'confidence_growth', 'practice', 'thesis_clarity', 'pace', 'nps'
+            ];
+            for (const groupName of requiredRadioGroups) {
+                if (!document.querySelector(`input[name="${groupName}"]:checked`)) {
+                    errorBanner.textContent = 'Пожалуйста, заполните все обязательные вопросы перед отправкой.';
+                    errorBanner.style.display = 'block';
+                    errorBanner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    return;
+                }
+            }
+
+            const get = (n) => {
+                const el = document.querySelector(`input[name="${n}"]:checked`);
+                return el ? el.value : '';
+            };
+
+            const data = {
+                timestamp: new Date().toISOString(),
+                overall_rating: get('overall_rating'),
+                most_useful_lecture: get('most_useful_lecture'),
+                hardest_lecture: get('hardest_lecture'),
+                skill_money: get('skill_money'),
+                skill_people: get('skill_people'),
+                skill_flow: get('skill_flow'),
+                skill_comm: get('skill_comm'),
+                confidence_growth: get('confidence_growth'),
+                practice: get('practice'),
+                thesis_clarity: get('thesis_clarity'),
+                pace: get('pace'),
+                takeaway: form.takeaway.value.trim(),
+                extra: form.extra.value.trim(),
+                missing: form.missing.value.trim(),
+                changes: form.changes.value.trim(),
+                nps: get('nps'),
+                comments: form.comments.value.trim()
+            };
+
+            // Show loading
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner"></span> Отправка...';
+
+            try {
+                if (GOOGLE_SCRIPT_URL.includes('__PASTE')) {
+                    throw new Error('Google Apps Script URL не настроен. См. инструкцию в form/Инструкция_подключения.md.');
+                }
+
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                // no-cors means we can't read the response, so assume success
+                form.style.display = 'none';
+                submitSection.style.display = 'none';
+                successMessage.style.display = 'block';
+                successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } catch (err) {
+                errorBanner.textContent = 'Ошибка: ' + err.message;
+                errorBanner.style.display = 'block';
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Отправить';
+                errorBanner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        });
+    </script>
+</body>
+</html>
